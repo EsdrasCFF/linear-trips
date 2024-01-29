@@ -27,7 +27,7 @@ export function Header() {
   return (
     <div className="container mx-auto px-5 h-[93px] flex justify-between items-center" >
       <div className="relative h-[32px] w-[182px]" >
-        <Image src="/logo.png" alt="Linear Trips" fill />
+        <Image src="/logo.png" alt="Linear Trips" fill/>
       </div>
       
       {status === "unauthenticated" && (

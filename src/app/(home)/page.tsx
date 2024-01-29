@@ -1,9 +1,6 @@
-"use client"
-
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
 import { TripSearch } from "./components/TripSearch";
 import { QuickSearch } from "./components/QuickSearch";
+import { RecommenderTrips } from "./components/RecommendedTrips";
 
 export default function Home() {
 
@@ -12,6 +9,7 @@ export default function Home() {
     <main>
      <TripSearch/>
      <QuickSearch/>
+     <RecommenderTrips/>
     </main>
   )
 }
