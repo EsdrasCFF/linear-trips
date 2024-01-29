@@ -1,6 +1,7 @@
-import { prisma } from "@/lib/prisma";
+import { prismaClient } from "@/lib/prisma";
 import { TripHeader } from "./components/TripHeader";
 import { TripReservation } from "./components/TripReservation";
+import { TripDescription } from "./components/TripDescription";
 
 
 interface TripDetailsPageProps {
@@ -10,7 +11,7 @@ interface TripDetailsPageProps {
 }
 
 function getTripsDetails(tripId: string) {
-  const trip = prisma.trip.findUnique({
+  const trip = prismaClient.trip.findUnique({
     where: {
       id: tripId
     }
@@ -28,7 +29,7 @@ export default async function TripDeatailsPage({params}: TripDetailsPageProps) {
     <div className="container mx-auto" >
       <TripHeader trip={trip} />
       <TripReservation trip={trip} />
-      
+      <TripDescription description={trip.description}/>
     </div>
   )
 }
