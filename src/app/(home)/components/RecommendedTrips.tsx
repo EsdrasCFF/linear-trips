@@ -1,8 +1,8 @@
 import { TripItem } from "@/components/TripItem"
-import { prisma } from "@/lib/prisma"
+import { prismaClient } from "@/lib/prisma"
 
 async function getTrips() {
-  const trips = await prisma.trip.findMany();
+  const trips = await prismaClient.trip.findMany();
 
   return trips
 }

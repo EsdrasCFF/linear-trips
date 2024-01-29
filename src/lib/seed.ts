@@ -1,7 +1,7 @@
-import { prisma } from "../lib/prisma";
+import { prismaClient } from "../lib/prisma";
 
 async function main() {
-  await prisma.trip.createMany({
+  await prismaClient.trip.createMany({
     data: [
       {
         name: "Hotel Aurora",
@@ -189,10 +189,10 @@ async function main() {
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await prismaClient.$disconnect();
   })
   .catch(async (e) => {
     console.error(e);
-    await prisma.$disconnect();
+    await prismaClient.$disconnect();
     process.exit(1);
   });
