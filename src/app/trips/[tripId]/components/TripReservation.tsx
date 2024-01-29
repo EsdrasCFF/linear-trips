@@ -25,6 +25,9 @@ export function TripReservation({trip}:TripReservationProps) {
       </div>
 
       <Button className="mt-[10px]" >Reservar Agora</Button>
+
+      <div className="my-10 border text-grayLighter" ></div>
+
     </div>
   )
 }

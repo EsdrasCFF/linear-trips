@@ -28,7 +28,7 @@ export default async function TripDeatailsPage({params}: TripDetailsPageProps) {
     <div className="container mx-auto" >
       <TripHeader trip={trip} />
       <TripReservation trip={trip} />
-      <div className="my-10 mx-5 border text-grayLighter" ></div>
+      
     </div>
   )
 }
