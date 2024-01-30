@@ -45,7 +45,7 @@ export function Header() {
           
             {menuIsOpen && (
               <button 
-                className="absolute top-14 left-0 right-0 w-full h-full bg-white shadow-md text-sm text-primary rounded-md" 
+                className="z-50 absolute top-14 left-0 right-0 w-full h-full bg-white shadow-md text-sm text-primary rounded-md" 
                 onClick={handleSignOutClick}
               >
                 Logout
