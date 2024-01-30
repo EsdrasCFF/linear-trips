@@ -10,7 +10,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormError } from "@/components/FormError";
 
 interface TripReservationProps {
-  trip: Trip;
+  tripStartDate: Date;
+  tripEndDate: Date;
+  maxGuests: number;
 }
 
 const TripReservationSchema = z.object({
@@ -21,17 +23,18 @@ const TripReservationSchema = z.object({
 
 type TripReservationFormData = z.infer<typeof TripReservationSchema>
 
-export function TripReservation({trip}:TripReservationProps) {
+export function TripReservation({maxGuests,tripStartDate, tripEndDate}:TripReservationProps) {
 
-  const {register, handleSubmit, formState: {isSubmitting, errors}, control} = useForm<TripReservationFormData>({
+  const {register, handleSubmit, formState: {isSubmitting, errors}, control, watch} = useForm<TripReservationFormData>({
     resolver: zodResolver(TripReservationSchema),
   });
   
+  const selectedStartDate = watch('startDate')
+
   function handleFormSubmit(data: TripReservationFormData) {
     console.log(data)
   }
 
-  console.log(errors.endDate)
 
   return (
     
@@ -47,6 +50,7 @@ export function TripReservation({trip}:TripReservationProps) {
               error={!!errors.startDate}
               errorMessage={errors.startDate?.type == 'invalid_type' ? 'Campo obrigatório' : errors.startDate?.message}
               selected={field.value}
+              minDate={tripStartDate}
             />
           )}
         />
@@ -61,6 +65,8 @@ export function TripReservation({trip}:TripReservationProps) {
               error={!!errors.endDate}
               errorMessage={errors.endDate?.type == 'invalid_type' ? 'Campo obrigatório' : errors.startDate?.message}
               selected={field.value}
+              maxDate={tripEndDate}
+              minDate={selectedStartDate}
             />
           )}
         />
@@ -69,7 +75,7 @@ export function TripReservation({trip}:TripReservationProps) {
 
       <div>
         <Input {...register('guests', {valueAsNumber: true})} 
-          type="number" placeholder={`Número de hospedes (max: ${trip.maxGuests})`} className="mt-[10px]"
+          type="number" placeholder={`Número de hospedes (max: ${maxGuests})`} className="mt-[10px]"
         />
         
         {errors.guests?.type == 'invalid_type' ? (
