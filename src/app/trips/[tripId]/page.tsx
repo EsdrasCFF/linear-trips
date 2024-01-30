@@ -30,7 +30,7 @@ export default async function TripDeatailsPage({params}: TripDetailsPageProps) {
   return (
     <div className="container mx-auto" >
       <TripHeader trip={trip} />
-      <TripReservation pricePerDay={Number(trip.pricePerDay)} maxGuests={trip.maxGuests} tripStartDate={trip.startDate} tripEndDate={trip.endDate} />
+      <TripReservation tripId={trip.id} pricePerDay={Number(trip.pricePerDay)} maxGuests={trip.maxGuests} tripStartDate={trip.startDate} tripEndDate={trip.endDate} />
       <TripDescription description={trip.description}/>
       <TripHighlights highlights={trip.highlights} />
       <TripLocation location={trip.location} locationDescription={trip.locationDescription} />
