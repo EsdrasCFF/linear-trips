@@ -3,6 +3,7 @@
 import { MenuIcon } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 
@@ -26,9 +27,11 @@ export function Header() {
 
   return (
     <div className="container mx-auto px-5 h-[93px] flex justify-between items-center" >
-      <div className="relative h-[32px] w-[182px]" >
-        <Image src="/logo.png" alt="Linear Trips" fill/>
-      </div>
+      <Link href='/'>
+        <div className="relative h-[32px] w-[182px]" >
+          <Image src="/logo.png" alt="Linear Trips" fill/>
+        </div>
+      </Link>
       
       {status === "unauthenticated" && (
         <button className="text-primary text-sm font-semibold" onClick={handleSignInClick}>

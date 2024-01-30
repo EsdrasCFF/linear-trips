@@ -19,7 +19,7 @@ export function TripLocation({location, locationDescription}: TripLocationProps)
 
       <p className="text-xs leading-5 mt-1" >{`${location},  ${locationDescription}`}</p>
 
-      <Button variant="outlined" className="my-5" > Ver no Google Maps </Button>
+      <Button variant="outlined" className="mt-5" > Ver no Google Maps </Button>
     </div>
   )
 }
