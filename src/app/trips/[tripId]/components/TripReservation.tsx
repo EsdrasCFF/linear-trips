@@ -3,16 +3,20 @@
 import Button from "@/components/Button";
 import DatePicker from "@/components/DatePicker";
 import Input from "@/components/Input";
-import { Trip } from "@prisma/client";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormError } from "@/components/FormError";
+import { priceFormatter } from "@/utils/formatter";
+import { differenceInDays } from "date-fns";
+import ptBR from 'date-fns/locale/pt-BR'
+
 
 interface TripReservationProps {
   tripStartDate: Date;
   tripEndDate: Date;
   maxGuests: number;
+  pricePerDay: number;
 }
 
 const TripReservationSchema = z.object({
@@ -23,13 +27,16 @@ const TripReservationSchema = z.object({
 
 type TripReservationFormData = z.infer<typeof TripReservationSchema>
 
-export function TripReservation({maxGuests,tripStartDate, tripEndDate}:TripReservationProps) {
+export function TripReservation({maxGuests,tripStartDate, tripEndDate, pricePerDay}:TripReservationProps) {
 
   const {register, handleSubmit, formState: {isSubmitting, errors}, control, watch} = useForm<TripReservationFormData>({
     resolver: zodResolver(TripReservationSchema),
   });
   
   const selectedStartDate = watch('startDate')
+  const selectedEndDate = watch('endDate')
+
+  const totalDays = selectedEndDate && selectedStartDate ? differenceInDays(selectedEndDate, selectedStartDate) : 0
 
   function handleFormSubmit(data: TripReservationFormData) {
     console.log(data)
@@ -86,8 +93,10 @@ export function TripReservation({maxGuests,tripStartDate, tripEndDate}:TripReser
       </div>
     
       <div className="flex justify-between mt-[10px]" >
-        <p className="text-primaryDarker font-medium" >Total (7 noites)</p>
-        <p className="text-primaryDarker font-medium" >R$ 2.160 </p>
+        <p className="text-primaryDarker font-medium" >Total ({`${totalDays} noites`})</p>
+        <p className="text-primaryDarker font-medium" > 
+          {(selectedStartDate && selectedEndDate) ? priceFormatter.format(pricePerDay * totalDays) : 'R$ 0,00'} 
+        </p>
       </div>
 
       <Button className="mt-[10px]" onClick={handleSubmit(handleFormSubmit)} disabled={isSubmitting} >Reservar Agora</Button>
