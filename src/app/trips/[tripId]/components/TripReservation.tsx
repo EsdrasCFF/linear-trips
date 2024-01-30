@@ -31,6 +31,8 @@ export function TripReservation({trip}:TripReservationProps) {
     console.log(data)
   }
 
+  console.log(errors.endDate)
+
   return (
     
     <div className="flex flex-col px-5" >
@@ -43,7 +45,7 @@ export function TripReservation({trip}:TripReservationProps) {
             <DatePicker 
               placeholderText="Data de Início" onChange={field.onChange} className="w-full" 
               error={!!errors.startDate}
-              errorMessage={errors.startDate?.message}
+              errorMessage={errors.startDate?.type == 'invalid_type' ? 'Campo obrigatório' : errors.startDate?.message}
               selected={field.value}
             />
           )}
@@ -57,7 +59,7 @@ export function TripReservation({trip}:TripReservationProps) {
             <DatePicker 
               placeholderText="Data Final" onChange={field.onChange} className="w-full" 
               error={!!errors.endDate}
-              errorMessage={errors.endDate?.message}
+              errorMessage={errors.endDate?.type == 'invalid_type' ? 'Campo obrigatório' : errors.startDate?.message}
               selected={field.value}
             />
           )}
@@ -70,7 +72,9 @@ export function TripReservation({trip}:TripReservationProps) {
           type="number" placeholder={`Número de hospedes (max: ${trip.maxGuests})`} className="mt-[10px]"
         />
         
-        {errors.guests && (
+        {errors.guests?.type == 'invalid_type' ? (
+          <FormError message='Hóspedes são obrigatórios. Informe a quantidade' />
+        ): (
           <FormError message={errors.guests?.message!} />
         )}
       </div>
@@ -80,7 +84,7 @@ export function TripReservation({trip}:TripReservationProps) {
         <p className="text-primaryDarker font-medium" >R$ 2.160 </p>
       </div>
 
-      <Button className="mt-[10px]" onClick={handleSubmit(handleFormSubmit)}>Reservar Agora</Button>
+      <Button className="mt-[10px]" onClick={handleSubmit(handleFormSubmit)} disabled={isSubmitting} >Reservar Agora</Button>
 
       <div className="my-10 border text-grayLighter" ></div>
 
