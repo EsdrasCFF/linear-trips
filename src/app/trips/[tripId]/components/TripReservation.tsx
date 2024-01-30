@@ -9,7 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormError } from "@/components/FormError";
 import { priceFormatter } from "@/utils/formatter";
 import { differenceInDays } from "date-fns";
-import ptBR from 'date-fns/locale/pt-BR'
+import { api } from "@/lib/axios";
 
 
 interface TripReservationProps {
@@ -17,6 +17,7 @@ interface TripReservationProps {
   tripEndDate: Date;
   maxGuests: number;
   pricePerDay: number;
+  tripId: string;
 }
 
 const TripReservationSchema = z.object({
@@ -27,7 +28,7 @@ const TripReservationSchema = z.object({
 
 type TripReservationFormData = z.infer<typeof TripReservationSchema>
 
-export function TripReservation({maxGuests,tripStartDate, tripEndDate, pricePerDay}:TripReservationProps) {
+export function TripReservation({tripId, maxGuests,tripStartDate, tripEndDate, pricePerDay}:TripReservationProps) {
 
   const {register, handleSubmit, formState: {isSubmitting, errors}, control, watch} = useForm<TripReservationFormData>({
     resolver: zodResolver(TripReservationSchema),
@@ -38,8 +39,15 @@ export function TripReservation({maxGuests,tripStartDate, tripEndDate, pricePerD
 
   const totalDays = selectedEndDate && selectedStartDate ? differenceInDays(selectedEndDate, selectedStartDate) : 0
 
-  function handleFormSubmit(data: TripReservationFormData) {
-    console.log(data)
+  async function handleFormSubmit(data: TripReservationFormData) {
+    
+    const response = await api.post('/trips/check', {
+      startDate: data.startDate,
+      endDate: data.endDate,
+      tripId: tripId,
+    })
+
+    console.log(response)
   }
 
 
