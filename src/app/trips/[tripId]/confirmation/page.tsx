@@ -2,7 +2,7 @@
 
 import { api } from "@/lib/axios";
 import { Trip } from "@prisma/client";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import ReactCountryFlag from "react-country-flag";
@@ -10,6 +10,7 @@ import { priceFormatter } from "@/utils/formatter";
 import Button from "@/components/Button";
 import ptBR from 'date-fns/locale/pt-BR'
 import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 
 interface TripConfirmationPageProps {
   params: {
@@ -21,6 +22,9 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
   const [trip, setTrip] = useState<Trip | null>()
   const [totalPrice, setTotalPrice] = useState<number | null>()
   
+  const session = useSession()
+  const router = useRouter()
+
   const searchParams = useSearchParams()
 
   const startDateString = searchParams.get('startDate')
@@ -30,7 +34,7 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
   const tripStartDate = startDateString && format(new Date(startDateString), 'dd-MMM', {locale: ptBR})
   const tripEndDate = endDateString && format(new Date(endDateString), 'dd-MMM', {locale: ptBR})
   const tripGuests = guestsString && guestsString
-  
+
   useEffect(() => {
     const fetchTrip = async () => {
       const response = await api.post('/trips/check', {
@@ -44,8 +48,12 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
       setTotalPrice(Number(response.data.totalPrice))    
     }
     
+    if(session.status == 'unauthenticated') {
+      return  router.push('/')
+    }
+
     fetchTrip()
-  },[])
+  },[session])
   
   if(!trip) return null
   
