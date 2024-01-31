@@ -30,7 +30,7 @@ type TripReservationFormData = z.infer<typeof TripReservationSchema>
 
 export function TripReservation({tripId, maxGuests,tripStartDate, tripEndDate, pricePerDay}:TripReservationProps) {
 
-  const {register, handleSubmit, formState: {isSubmitting, errors}, control, watch} = useForm<TripReservationFormData>({
+  const {register, handleSubmit, formState: {isSubmitting, errors}, control, watch, setError} = useForm<TripReservationFormData>({
     resolver: zodResolver(TripReservationSchema),
   });
   
@@ -47,7 +47,35 @@ export function TripReservation({tripId, maxGuests,tripStartDate, tripEndDate, p
       tripId: tripId,
     })
 
-    console.log(response)
+    console.log(response.data.error.code)
+
+    if(response.data.error.code == 'TRIP_ALREADY_RESERVED') {
+      setError('startDate', {
+        type: 'manual',
+        message: 'Esta da já está reservada.'
+      })
+    }
+
+    if(response.data.error.code == 'TRIP_ALREADY_RESERVED') {
+      setError('endDate', {
+        type: 'manual',
+        message: 'Esta da já está reservada.'
+      })
+    }
+
+    if(response.data.error.code == 'INVALID_START_DATE') {
+      setError('startDate', {
+        type: 'manual',
+        message: 'Data inválida.'
+      })
+    }
+
+    if(response.data.error.code == 'INVALID_START_DATE') {
+      setError('endDate', {
+        type: 'manual',
+        message: 'Data inválida.'
+      })
+    }
   }
 
 
@@ -66,6 +94,7 @@ export function TripReservation({tripId, maxGuests,tripStartDate, tripEndDate, p
               errorMessage={errors.startDate?.type == 'invalid_type' ? 'Campo obrigatório' : errors.startDate?.message}
               selected={field.value}
               minDate={tripStartDate}
+              dateFormat='dd/MM/yyyy'
             />
           )}
         />
@@ -82,6 +111,7 @@ export function TripReservation({tripId, maxGuests,tripStartDate, tripEndDate, p
               selected={field.value}
               maxDate={tripEndDate}
               minDate={selectedStartDate}
+              dateFormat='dd/MM/yyyy'
             />
           )}
         />
