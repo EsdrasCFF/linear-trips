@@ -10,6 +10,7 @@ import { FormError } from "@/components/FormError";
 import { priceFormatter } from "@/utils/formatter";
 import { differenceInDays } from "date-fns";
 import { api } from "@/lib/axios";
+import { useRouter } from "next/navigation";
 
 
 interface TripReservationProps {
@@ -39,6 +40,8 @@ export function TripReservation({tripId, maxGuests,tripStartDate, tripEndDate, p
 
   const totalDays = selectedEndDate && selectedStartDate ? differenceInDays(selectedEndDate, selectedStartDate) : 0
 
+  const router = useRouter()
+
   async function handleFormSubmit(data: TripReservationFormData) {
     
     const response = await api.post('/trips/check', {
@@ -47,35 +50,39 @@ export function TripReservation({tripId, maxGuests,tripStartDate, tripEndDate, p
       tripId: tripId,
     })
 
-    console.log(response.data.error.code)
-
-    if(response.data.error.code == 'TRIP_ALREADY_RESERVED') {
+    if(response.data.error?.code == 'TRIP_ALREADY_RESERVED') {
       setError('startDate', {
         type: 'manual',
         message: 'Esta da já está reservada.'
       })
     }
 
-    if(response.data.error.code == 'TRIP_ALREADY_RESERVED') {
+    if(response.data.error?.code == 'TRIP_ALREADY_RESERVED') {
       setError('endDate', {
         type: 'manual',
         message: 'Esta da já está reservada.'
       })
     }
 
-    if(response.data.error.code == 'INVALID_START_DATE') {
+    if(response.data.error?.code == 'INVALID_START_DATE') {
       setError('startDate', {
         type: 'manual',
         message: 'Data inválida.'
       })
     }
 
-    if(response.data.error.code == 'INVALID_START_DATE') {
+    if(response.data.error?.code == 'INVALID_START_DATE') {
       setError('endDate', {
         type: 'manual',
         message: 'Data inválida.'
       })
     }
+    
+    const startDate = data.startDate!.toISOString()
+    const endDate = data.endDate!.toISOString()
+    const guests = data.guests
+
+    router.push(`/trips/${tripId}/confirmation?startDate=${startDate}&endDate=${endDate}&guests=${guests}`)
   }
 
 
