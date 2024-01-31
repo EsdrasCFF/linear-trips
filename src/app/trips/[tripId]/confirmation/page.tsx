@@ -43,17 +43,21 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
         tripId: params.tripId
       })
       
-      
+      if(response.data.error) {
+        return router.push('/')
+      }
+
       setTrip(response.data.trip)
       setTotalPrice(Number(response.data.totalPrice))    
     }
+
     
     if(session.status == 'unauthenticated') {
       return  router.push('/')
     }
 
     fetchTrip()
-  },[session])
+  },[session, searchParams, params, router])
   
   if(!trip) return null
   
