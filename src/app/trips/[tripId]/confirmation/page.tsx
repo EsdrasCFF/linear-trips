@@ -81,9 +81,9 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
       
         <h3 className="mt-5">Hóspedes</h3>
         <p className="mt-1" >{tripGuests} Hóspedes</p>
+      
+        <Button className="mt-5" >Finalizar Compra</Button>
       </div>
-
-      <Button></Button>
     </div>
   )
 }
