@@ -1,5 +1,5 @@
 import { prismaClient } from "@/lib/prisma";
-import { isBefore } from "date-fns";
+import { differenceInDays, isBefore } from "date-fns";
 import { NextResponse } from "next/server";
 
 interface ReservationBodyProps {
@@ -56,9 +56,13 @@ export async function POST(request: Request) {
     );
   }
 
+  const totalPrice = Number(differenceInDays(new Date(body.endDate), new Date(body.startDate)) * Number(trip.pricePerDay))
+
   return new NextResponse(
     JSON.stringify({
       success: true,
+      trip,
+      totalPrice,
     })
   )
 }
