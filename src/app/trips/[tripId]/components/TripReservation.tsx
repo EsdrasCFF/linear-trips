@@ -55,10 +55,8 @@ export function TripReservation({tripId, maxGuests,tripStartDate, tripEndDate, p
         type: 'manual',
         message: 'Esta da já está reservada.'
       })
-    }
 
-    if(response.data.error?.code == 'TRIP_ALREADY_RESERVED') {
-      setError('endDate', {
+      return setError('endDate', {
         type: 'manual',
         message: 'Esta da já está reservada.'
       })
@@ -69,10 +67,8 @@ export function TripReservation({tripId, maxGuests,tripStartDate, tripEndDate, p
         type: 'manual',
         message: 'Data inválida.'
       })
-    }
-
-    if(response.data.error?.code == 'INVALID_START_DATE') {
-      setError('endDate', {
+    
+      return setError('endDate', {
         type: 'manual',
         message: 'Data inválida.'
       })

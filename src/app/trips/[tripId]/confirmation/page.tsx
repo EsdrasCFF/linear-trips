@@ -11,6 +11,7 @@ import Button from "@/components/Button";
 import ptBR from 'date-fns/locale/pt-BR'
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 interface TripConfirmationPageProps {
   params: {
@@ -34,6 +35,29 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
   const tripStartDate = startDateString && format(new Date(startDateString), 'dd-MMM', {locale: ptBR})
   const tripEndDate = endDateString && format(new Date(endDateString), 'dd-MMM', {locale: ptBR})
   const tripGuests = guestsString && guestsString
+
+  console.log(session.data)
+
+  //startDate,endDate, tripId, userId, totalPaid, guests
+
+  async function handleBuyClick() {
+    const response = await api.post('/trips/reservation', {
+      startDate: startDateString,
+      endDate: endDateString,
+      tripId: trip?.id,
+      userId: session.data?.user.id,
+      totalPaid: totalPrice,
+      guests: Number(guestsString),
+    })
+
+    if(response.data.success) {
+      toast.success('Reserva Realizada com Sucesso', {position: 'top-center'})
+    }
+
+    router.push('/')
+
+  }
+
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -94,7 +118,7 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
         <h3 className="mt-5">Hóspedes</h3>
         <p className="mt-1" >{tripGuests} Hóspedes</p>
       
-        <Button className="mt-5" >Finalizar Compra</Button>
+        <Button className="mt-5" onClick={handleBuyClick}>Finalizar Compra</Button>
       </div>
     </div>
   )
