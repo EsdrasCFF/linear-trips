@@ -1,15 +1,20 @@
 "use client"
 
-import { TripReservation } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import axios from "axios"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
+import { UserReservationItem } from "./components/UserReservationItem"
+
 
 export default function MyTripsPage() {
-  const [reservations, setReservations] = useState<TripReservation | null>()
-
+  const [reservations, setReservations] = useState<
+  Prisma.TripReservationGetPayload<{
+    include: {trip: true}
+  }>[]
+  >([])
 
   const session = useSession()
   const router = useRouter()
@@ -25,15 +30,19 @@ export default function MyTripsPage() {
     const fetchTrips = async () => {
       const response = await axios.get(`/api/users/${session.data?.user.id}/reservations`)
 
-      console.log(response.data)
-
-      setReservations(response.data.reservations)
+      setReservations(response.data)
     }
 
     fetchTrips()
   }, [session, router])
 
   return (
-    <div>My Trips</div>
+    <div className="container mx-auto p-5" >
+      <h1 className="text-primaryDarker font-semibold text-xl" >Minhas viagens</h1>
+
+      {reservations?.map((reservation) => (
+        <UserReservationItem key={reservation.id} tripReservation={reservation}/>
+      ))}
+    </div>
   )
 }
