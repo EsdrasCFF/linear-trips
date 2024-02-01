@@ -60,7 +60,7 @@ export function UserReservationItem({tripReservation}: UserReservationItemProps)
       </div>
 
       {/* { BOTAO } */}
-      <Button variant="outlined" className="text-red-700 font-bold border-red-700 hover:bg-red-300 " > Cancelar </Button>
+      <Button variant="outlined" className="text-red-700 font-bold border-red-700 hover:bg-red-700 hover:text-white " > Cancelar </Button>
 
     </div>
   )
