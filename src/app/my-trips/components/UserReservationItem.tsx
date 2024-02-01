@@ -1,10 +1,13 @@
 import Button from "@/components/Button"
 import { priceFormatter } from "@/utils/formatter"
 import { Prisma } from "@prisma/client"
+import axios from "axios"
 import { format } from "date-fns"
 import ptBR from 'date-fns/locale/pt-BR'
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import ReactCountryFlag from "react-country-flag"
+import { toast } from "react-toastify"
 
 interface UserReservationItemProps {
   tripReservation: Prisma.TripReservationGetPayload<{
@@ -16,10 +19,26 @@ export function UserReservationItem({tripReservation}: UserReservationItemProps)
   
   const {trip} = tripReservation
 
+  const router = useRouter()
+
   const tripStartDate = format(tripReservation.startDate, 'dd-MMM', {locale: ptBR})
   const tripEndDate = format(tripReservation.endDate, 'dd-MMM', {locale: ptBR})
   const tripGuests = tripReservation.guests
   
+  async function handleCancelButtonClick() {
+    const response = await axios.delete(`/api/trips/reservation/${tripReservation.id}`)
+
+    if(response.data.code) {
+      toast.error('Ocorreu um erro ao cancelar reserva!', {position: 'top-center'})
+
+      return router.push('/')
+    }
+
+    toast.success('Reserva cancelada com Sucesso!', {position: 'top-center'})
+
+    return router.push('/my-trips')
+  }
+
   return (
     <div className="flex flex-col gap-5 p-5 mt-5 border-grayLighter border-solid border shadow-lg rounded-lg" >
       {/* {IMAGEM} */}
@@ -60,7 +79,7 @@ export function UserReservationItem({tripReservation}: UserReservationItemProps)
       </div>
 
       {/* { BOTAO } */}
-      <Button variant="outlined" className="text-red-700 font-bold border-red-700 hover:bg-red-700 hover:text-white " > Cancelar </Button>
+      <Button variant="outlined" className="text-red-700 font-bold border-red-700 hover:bg-red-700 hover:text-white " onClick={handleCancelButtonClick}> Cancelar </Button>
 
     </div>
   )
