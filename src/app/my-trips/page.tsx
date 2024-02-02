@@ -13,13 +13,19 @@ import Link from "next/link"
 
 export default function MyTripsPage() {
   const [reservations, setReservations] = useState<
-  Prisma.TripReservationGetPayload<{
-    include: {trip: true}
-  }>[]
+    Prisma.TripReservationGetPayload<{
+      include: {trip: true}
+    }>[]
   >([])
 
   const session = useSession()
   const router = useRouter()
+  
+  const fetchTrips = async () => {
+    const response = await axios.get(`/api/users/${session.data?.user.id}/reservations`)
+
+    setReservations(response.data)
+  }
 
   useEffect(() => {
     if(session.status === 'unauthenticated') {
@@ -29,14 +35,8 @@ export default function MyTripsPage() {
       toast.error('Você precisa fazer login!', {position: 'top-center'})
     }
 
-    const fetchTrips = async () => {
-      const response = await axios.get(`/api/users/${session.data?.user.id}/reservations`)
-
-      setReservations(response.data)
-    }
-
     fetchTrips()
-  }, [session, router])
+  }, [session])
 
   return (
     <div className="container mx-auto p-5" >
@@ -45,7 +45,7 @@ export default function MyTripsPage() {
       {reservations.length > 0 ?
         (
           reservations.map((reservation) => (
-            <UserReservationItem key={reservation.id} tripReservation={reservation}/>
+            <UserReservationItem key={reservation.id} tripReservation={reservation} fetchTrips={fetchTrips}/>
           ))
         ) : (
           <>
