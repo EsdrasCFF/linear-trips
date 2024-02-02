@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { UserReservationItem } from "./components/UserReservationItem"
+import Button from "@/components/Button"
+import Link from "next/link"
 
 
 export default function MyTripsPage() {
@@ -39,10 +41,24 @@ export default function MyTripsPage() {
   return (
     <div className="container mx-auto p-5" >
       <h1 className="text-primaryDarker font-semibold text-xl" >Minhas viagens</h1>
+      
+      {reservations.length > 0 ?
+        (
+          reservations.map((reservation) => (
+            <UserReservationItem key={reservation.id} tripReservation={reservation}/>
+          ))
+        ) : (
+          <>
+            <h3 className="mt-5" >Você ainda não tem nenhuma reserva! :/ </h3>
+            <div className="flex justify-end">
+              <Link href='/' >
+                <Button className="mt-5" >  Faça uma reserva! </Button>
+              </Link>
+            </div>
+          </>
+        )}
 
-      {reservations?.map((reservation) => (
-        <UserReservationItem key={reservation.id} tripReservation={reservation}/>
-      ))}
+      
     </div>
   )
 }

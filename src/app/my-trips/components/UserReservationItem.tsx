@@ -36,7 +36,7 @@ export function UserReservationItem({tripReservation}: UserReservationItemProps)
 
     toast.success('Reserva cancelada com Sucesso!', {position: 'top-center'})
 
-    return router.push('/my-trips')
+    return router.push('/')
   }
 
   return (
