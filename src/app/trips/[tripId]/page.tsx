@@ -1,4 +1,4 @@
-import { prismaClient } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { TripHeader } from "./components/TripHeader";
 import { TripReservation } from "./components/TripReservation";
 import { TripDescription } from "./components/TripDescription";
@@ -13,7 +13,7 @@ interface TripDetailsPageProps {
 }
 
 function getTripsDetails(tripId: string) {
-  const trip = prismaClient.trip.findUnique({
+  const trip = prisma.trip.findUnique({
     where: {
       id: tripId
     }

@@ -1,4 +1,4 @@
-import { prismaClient } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { differenceInDays, isBefore } from "date-fns";
 import { NextResponse } from "next/server";
 
@@ -12,7 +12,7 @@ interface ReservationBodyProps {
 export async function POST(request: Request) {
   const body: ReservationBodyProps = await request.json()
 
-  const trip = await prismaClient.trip.findUnique({
+  const trip = await prisma.trip.findUnique({
     where: {
       id: body.tripId
     }
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     }))
   }
 
-  const reservation = await prismaClient.tripReservation.findMany({
+  const reservation = await prisma.tripReservation.findMany({
     where: {
       tripId: body.tripId,
       startDate: {

@@ -1,4 +1,4 @@
-import { prismaClient } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 interface RouteApiURLProps {
@@ -18,7 +18,7 @@ export async function DELETE(request: Request, {params}: RouteApiURLProps) {
     }))
   }
 
-  const reservationDeleted = await prismaClient.tripReservation.delete({
+  const reservationDeleted = await prisma.tripReservation.delete({
     where: {
       id: reservationId
     }

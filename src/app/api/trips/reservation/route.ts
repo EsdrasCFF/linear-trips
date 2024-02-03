@@ -1,4 +1,4 @@
-import { prismaClient } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 interface ReservationBodyProps{
@@ -16,7 +16,7 @@ export async function POST(request:Request) {
 
   const { startDate,endDate, tripId, userId, totalPaid, guests } = body;
 
-  const trip = await prismaClient.trip.findUnique({
+  const trip = await prisma.trip.findUnique({
     where: {
       id: tripId
     }
@@ -30,7 +30,7 @@ export async function POST(request:Request) {
     }))
   }
 
-  await prismaClient.tripReservation.create({
+  await prisma.tripReservation.create({
     data: {
       tripId,
       userId,

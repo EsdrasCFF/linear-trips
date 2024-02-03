@@ -1,4 +1,4 @@
-import { prismaClient } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 interface RouteApiURLProps {
@@ -18,7 +18,7 @@ export async function GET(request: Request, {params}: RouteApiURLProps) {
     }))
   }
 
-  const reservations = await prismaClient.tripReservation.findMany({
+  const reservations = await prisma.tripReservation.findMany({
     where: {
       userId,
     },
