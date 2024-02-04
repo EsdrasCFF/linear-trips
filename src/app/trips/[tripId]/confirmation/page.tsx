@@ -12,6 +12,7 @@ import ptBR from 'date-fns/locale/pt-BR'
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+import { loadStripe } from '@stripe/stripe-js'
 
 interface TripConfirmationPageProps {
   params: {
@@ -21,7 +22,7 @@ interface TripConfirmationPageProps {
 
 export default function TripConfirmationPage({params}: TripConfirmationPageProps) {
   const [trip, setTrip] = useState<Trip | null>()
-  const [totalPrice, setTotalPrice] = useState<number | null>()
+  const [totalPrice, setTotalPrice] = useState<number>()
   
   const session = useSession()
   const router = useRouter()
@@ -36,25 +37,44 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
   const tripEndDate = endDateString && format(new Date(endDateString), 'dd-MMM', {locale: ptBR})
   const tripGuests = guestsString && guestsString
 
-  console.log(session.data)
-
   //startDate,endDate, tripId, userId, totalPaid, guests
 
   async function handleBuyClick() {
-    const response = await api.post('/trips/reservation', {
+    // const response = await api.post('/trips/reservation', {
+    //   startDate: startDateString,
+    //   endDate: endDateString,
+    //   tripId: trip?.id,
+    //   userId: session.data?.user.id,
+    //   totalPaid: totalPrice,
+    //   guests: Number(guestsString),
+    // })
+
+    //tripId, totalPrice, name, description, coverImage, startDate, endDate, guests
+
+    const response = await api.post('/payment', {
+      tripId: trip?.id,
+      totalPrice,
+      name: trip?.name,
+      description: trip?.description,
+      coverImage: trip?.coverImage,
       startDate: startDateString,
       endDate: endDateString,
-      tripId: trip?.id,
-      userId: session.data?.user.id,
-      totalPaid: totalPrice,
-      guests: Number(guestsString),
+      guests: Number(guestsString)
     })
 
-    if(response.data.success) {
-      toast.success('Reserva Realizada com Sucesso', {position: 'top-center'})
-    }
+    const sessionId = response.data.session.id
 
-    router.push('/')
+    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!)
+
+    stripe?.redirectToCheckout(
+      {sessionId}
+    )
+
+    // if(response.data.success) {
+    //   toast.success('Reserva Realizada com Sucesso', {position: 'top-center'})
+    // }
+
+    //router.push('/')
 
   }
 
