@@ -9,30 +9,41 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 export async function POST(request: Request) {
   const signature = request.headers.get('stripe-signature')!
 
+  if(!signature) {
+    return new NextResponse(JSON.stringify({
+      error: {
+        code: 'STRIPE_SIGNATURE_NOT_FOUND'
+      }
+    }));
+  }
+
   const text = await request.text()
 
   const event = stripe.webhooks.constructEvent(text, signature, process.env.SRIPE_WEBHOOK_SECRET_KEY!)
 
-  let bookedTrip;
+  let paymentUpdate;
+  
+  let session = event.data.object as any
+  
+  console.log('METADATA_CHECKOUT:', session.metadata)
 
   if(event.type === 'checkout.session.completed') {
     
-    const session = event.data.object as any
+    const tripReservationId = session.metadata.reservationTripId as string
 
-    bookedTrip = await prisma.tripReservation.create({
+    paymentUpdate = await prisma.tripReservation.update({
+      where: {
+        id: tripReservationId
+      },
       data: {
-        startDate: new Date(session.metadata.startDate),
-        endDate: new Date(session.metadata.endDate),
-        userId: session.metadata.userId,
-        totalPaid: Number(session.metadata.totalPrice),
-        guests: Number(session.metadata.guests),
-        tripId: session.metadata.tripId
+        paymentStatus: 'PAYMENT_CONFIRMED'
       }
     })
   }
 
-  if(!bookedTrip) {
-    return new NextResponse(JSON.stringify({error: {code: 'Failed reserved trip'}}))
+
+  if(!paymentUpdate) {
+    return new NextResponse(JSON.stringify({error: {code: 'FAILED_PAYMENT_TRIP'}}))
   }
 
   return new NextResponse(JSON.stringify({received: true}), {status: 200})

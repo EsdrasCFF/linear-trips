@@ -1,7 +1,7 @@
 "use client"
 
 import { api } from "@/lib/axios";
-import { Trip } from "@prisma/client";
+import { Trip, TripReservation } from "@prisma/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -37,19 +37,8 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
   const tripEndDate = endDateString && format(new Date(endDateString), 'dd-MMM', {locale: ptBR})
   const tripGuests = guestsString && guestsString
 
-  //startDate,endDate, tripId, userId, totalPaid, guests
 
   async function handleBuyClick() {
-    // const response = await api.post('/trips/reservation', {
-    //   startDate: startDateString,
-    //   endDate: endDateString,
-    //   tripId: trip?.id,
-    //   userId: session.data?.user.id,
-    //   totalPaid: totalPrice,
-    //   guests: Number(guestsString),
-    // })
-
-    //tripId, totalPrice, name, description, coverImage, startDate, endDate, guests
 
     const response = await api.post('/payment', {
       tripId: trip?.id,
@@ -63,18 +52,17 @@ export default function TripConfirmationPage({params}: TripConfirmationPageProps
     })
 
     const sessionId = response.data.session.id
+    const tripReservation: TripReservation = response.data.reservationTrip
+    
+
+    console.log(sessionId)
+    console.log(tripReservation)
 
     const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!)
 
     stripe?.redirectToCheckout(
       {sessionId}
     )
-
-    // if(response.data.success) {
-    //   toast.success('Reserva Realizada com Sucesso', {position: 'top-center'})
-    // }
-
-    //router.push('/')
 
   }
 
