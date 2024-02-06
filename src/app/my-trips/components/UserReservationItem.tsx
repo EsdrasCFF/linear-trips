@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client"
 import axios from "axios"
 import { format } from "date-fns"
 import ptBR from 'date-fns/locale/pt-BR'
+import { CheckCircle } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import ReactCountryFlag from "react-country-flag"
@@ -38,6 +39,11 @@ export function UserReservationItem({tripReservation, fetchTrips}: UserReservati
     toast.success('Reserva cancelada com Sucesso!', {position: 'top-center'})
 
     fetchTrips()
+  }
+
+  const statusPayment = {
+    'WAITING_FOR_PAYMENT': 'Aguardando pagamento',
+    'PAYMENT_CONFIRMED': 'Pagamento Confirmado'
   }
 
   return (
@@ -77,6 +83,11 @@ export function UserReservationItem({tripReservation, fetchTrips}: UserReservati
       <div className="flex justify-between items-center">
         <span className="text-sm text-primaryDarker" >Total</span>
         <span className="text-sm text-primaryDarker font-bold" >{ priceFormatter.format(Number(tripReservation.totalPaid))}</span>
+      </div>
+
+      <div className="flex justify-between items-center">
+        <span className="text-sm text-primaryDarker" >Status de Pagamento</span>
+        <span className=" flex gap-2 items-center text-sm text-primaryDarker font-bold" >{statusPayment[tripReservation.paymentStatus]} <CheckCircle size={15} /></span>
       </div>
 
       {/* { BOTAO } */}
